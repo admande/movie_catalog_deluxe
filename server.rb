@@ -20,7 +20,6 @@ def db_connection
 end
 
 get '/actors' do
-  @actors = nil
   db_connection do |conn|
     sql_query = "SELECT id, name FROM actors ORDER BY actors.name ASC"
     @actors = conn.exec(sql_query)
@@ -29,7 +28,6 @@ get '/actors' do
 end
 
 get '/actors/:id' do
-  @actor = nil
   db_connection do |conn|
     sql_query = "SELECT actors.id AS actor_id, actors.name AS actor_name, movies.id AS movie_id, movies.title AS movie_title, cast_members.character AS character
     FROM actors
@@ -43,12 +41,12 @@ get '/actors/:id' do
 end
 
 get '/movies' do
-  @movies = nil
   db_connection do |conn|
     sql_query = "SELECT movies.id AS movie_id, movies.title AS movie_title, movies.year AS release_date, movies.rating AS movie_rating, movies.genre_id, movies.studio_id, studios.name AS studio_name, genres.name AS genre
                 FROM movies
                 LEFT OUTER JOIN genres ON movies.genre_id = genres.id
-                LEFT OUTER JOIN studios ON movies.studio_id = studios.id"
+                LEFT OUTER JOIN studios ON movies.studio_id = studios.id
+                ORDER BY movies.title ASC"
 
     @movies = conn.exec(sql_query)
   end
@@ -56,7 +54,6 @@ get '/movies' do
 end
 
 get '/movies/:id' do
-  @movie = nil
   db_connection do |conn|
     sql_query = "SELECT actors.id AS actor_id, actors.name AS actor_name, movies.id AS movie_id, movies.title AS movie_title, movies.year AS release_date, movies.rating AS movie_rating, movies.genre_id, movies.studio_id, studios.name AS studio_name, genres.name AS genre, cast_members.actor_id AS cast_member_actor_id, cast_members.character AS character
                 FROM movies
